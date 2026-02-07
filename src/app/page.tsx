@@ -5,11 +5,11 @@ import HomeClient from "@/app/components/HomeClient";
 export default async function Home() {
   return (
     <main className="relative min-h-screen font-sans overflow-hidden">
-      <h1 className="sr-only">Will you be my valentine ?</h1>
+
       <div className="absolute inset-0 -z-20">
         <Image
           src="/clouds1.webp"
-          alt="cloud background"
+          alt="valentines day"
           fill
           priority
           className="object-cover object-center"

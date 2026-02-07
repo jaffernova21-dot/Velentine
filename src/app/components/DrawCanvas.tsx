@@ -213,17 +213,17 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
             />
 
             <m.div
-                initial={{ opacity: 0, scale: 0.2, x: 20, y: -20 }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                exit={{ opacity: 0, scale: 0.2, x: 20, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
                 onAnimationComplete={initCanvas}
                 // Reduced radius: rounded-lg
                 // Dashed border: border-2 border-dashed border-[#FF2D55]
                 // Dotted BG: radial-gradient pattern
                 className="absolute left-8 right-8 top-4 bottom-8 z-[70] bg-[#f8f8f8] rounded-lg shadow-2xl overflow-hidden flex flex-col border-2 border-dashed border-[#FF2D55]"
                 style={{
-                    transformOrigin: 'top right',
+                    willChange: 'transform, opacity',
                     backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)',
                     backgroundSize: '20px 20px'
                 }}
@@ -236,8 +236,10 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                 {/* X Button inside panel - Circular */}
                 <div className="absolute top-4 right-4 z-10">
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-bold hover:scale-105 transition-all shadow-md"
+                        aria-label="Close drawing canvas"
+                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-bold hover:scale-105 transition-all shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF2D55]"
                     >
                         ✕
                     </button>
@@ -251,6 +253,8 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                     {/* The Canvas itself */}
                     <canvas
                         ref={canvasRef}
+                        role="img"
+                        aria-label="Valentine drawing canvas - use mouse or touch to draw"
                         style={{ cursor: CURSOR_URL }}
                         onMouseDown={startDrawing}
                         onMouseMove={draw}
@@ -275,8 +279,10 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                                         in 5 moves or less. Submit to see what others made.
                                     </p>
                                     <button
+                                        type="button"
                                         onClick={handleReset}
-                                        className="text-sm font-normal text-gray-500 underline underline-offset-4 hover:text-black transition-colors whitespace-nowrap mb-1 self-start md:self-auto"
+                                        aria-label="Reset canvas to initial state"
+                                        className="text-sm font-normal text-gray-500 underline underline-offset-4 hover:text-black transition-colors whitespace-nowrap mb-1 self-start md:self-auto focus:outline-none focus-visible:text-black"
                                     >
                                         Reset Canvas
                                     </button>
@@ -286,12 +292,18 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                             {/* Right Side: Buttons and Moves */}
                             <div className="flex flex-col items-end gap-3 pointer-events-auto w-full md:w-auto mt-2 md:mt-0">
                                 <div className="flex gap-3 w-full md:w-auto justify-stretch md:justify-end">
-                                    <button className="flex-1 md:flex-none rounded-full px-6 py-2 border border-b-[3px] border-black cursor-pointer bg-black text-white hover:bg-gray-900 transition-all active:border-b active:translate-y-[2px] font-bold text-sm shadow-sm">
+                                    <button
+                                        type="button"
+                                        aria-label="Submit your drawing"
+                                        className="flex-1 md:flex-none rounded-full px-6 py-2 border border-b-[3px] border-black cursor-pointer bg-black text-white hover:bg-gray-900 transition-all active:border-b active:translate-y-[2px] font-bold text-sm shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF2D55]"
+                                    >
                                         Submit
                                     </button>
                                     <button
+                                        type="button"
                                         onClick={handleSave}
-                                        className="flex-1 md:flex-none rounded-full px-6 py-2 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] text-white hover:brightness-110 transition-all active:border-b active:translate-y-[2px] font-bold text-sm shadow-sm"
+                                        aria-label="Save drawing as image"
+                                        className="flex-1 md:flex-none rounded-full px-6 py-2 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] text-white hover:brightness-110 transition-all active:border-b active:translate-y-[2px] font-bold text-sm shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
                                     >
                                         Save
                                     </button>

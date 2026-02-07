@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,15 +12,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#FF2D55",
+  colorScheme: "light",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+};
+
 export const metadata: Metadata = {
+  verification: {
+    google: "eP_k7lAoHo1853EwR8zCZmZedWBoRXSHVlCBn4R92PA",
+  },
   metadataBase: new URL("https://willyoubmyvalentine.vercel.app"),
-  title: "Will you be my valentine?",
+  title: "Will You Be My Valentine?",
   description: "The most unique way to ask 'Will you be my Valentine?'. Forget boring cards—send an interactive, playful experience that makes it impossible to say no. Try it now!",
   applicationName: "Will You Be My Valentine",
   authors: [{ name: "iloveyou" }],
   generator: "Next.js",
   keywords: [
-    // Short-tail (High Volume)
     "valentine",
     "valentines day",
     "valentine card",
@@ -29,38 +40,23 @@ export const metadata: Metadata = {
     "14 feb",
     "14 february",
     "14 feb 2026",
-    "14 feb 2026",
-
-    // Mid-tail (Specific Utility)
     "digital valentine",
     "valentine link",
     "online valentine",
     "valentine game",
     "valentine app",
-
-    // Low-tail / High Intent (Action Oriented)
     "will you be my valentine",
     "ask valentine online",
     "send valentine link",
     "create valentine card",
     "interactive valentine proposal",
     "how to ask valentine 2026",
-
-    // Niche / Descriptive
     "cute valentine ways",
     "funny valentine ask",
     "free valentine website",
     "no login valentine card"
   ],
   referrer: "origin-when-cross-origin",
-  themeColor: "#FF2D55",
-  colorScheme: "light",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
   creator: "Valentine Team",
   publisher: "Valentine Team",
   robots: {
@@ -78,9 +74,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://willyoubmyvalentine.vercel.app",
-    title: "Will you be my valentine ?",
-    description: "The most unique way to ask the big question. 💌",
-    siteName: "Will you be my valentine ?",
+    title: "Will You Be My Valentine?",
+    description: "The most unique way to ask 'Will you be my Valentine?'. Send an interactive, playful experience they can't say no to. Free and shareable! 💌",
+    siteName: "Will You Be My Valentine",
     images: [
       {
         url: "/willyoubemyvalentine.webp",
@@ -92,8 +88,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Will you be my valentine ?",
-    description: "The most unique way to ask the big question. 💌",
+    title: "Will You Be My Valentine?",
+    description: "The most unique way to ask 'Will you be my Valentine?'. Send an interactive, playful experience they can't say no to! 💌",
     images: ["/willyoubemyvalentine.webp"],
     creator: "@valentine_app",
   },
