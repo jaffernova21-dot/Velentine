@@ -6,15 +6,19 @@ const DECORATIONS = [
     // Bottom Right
     { src: "/duck2.webp", bottom: "2%", right: "0%", scale: 1.25, rotate: "0deg" },
     // Top Left
-    { src: "/duck5.webp", top: "15%", left: "5%", scale: 0.9, rotate: "-7deg", hiddenOnMobile: true },
+    // Start after 1s
+    { src: "/duck5.webp", top: "15%", left: "5%", scale: 0.9, rotate: "-7deg", hiddenOnMobile: true, waddle: true, delay: "1s" },
     // Top Right
-    { src: "/duck4.webp", top: "15%", right: "5%", scale: 1.1, rotate: "7deg", hiddenOnMobile: true },
+    { src: "/duck4.webp", top: "15%", right: "5%", scale: 1.1, rotate: "7deg", hiddenOnMobile: true, waddle: true, delay: "0s" },
 
     { src: "/duck3.webp", bottom: "35%", left: "5%", scale: 1.0, rotate: "12deg" },
-    { src: "/duck7.webp", bottom: "34%", right: "4%", scale: 0.85 },
-    { src: "/duck6.webp", bottom: "10%", left: "45%", scale: 1.15, rotate: "12deg", hiddenOnMobile: true },
+    // Start after 2s
+    { src: "/duck7.webp", bottom: "34%", right: "4%", scale: 0.85, waddle: true, delay: "2s" },
+    // Start after 0.5s
+    { src: "/duck6.webp", bottom: "10%", left: "45%", scale: 1.15, rotate: "12deg", hiddenOnMobile: true, waddle: true, delay: "0.5s" },
     { src: "/duck8.webp", bottom: "1%", right: "22%", scale: 0.85, hiddenOnMobile: true },
-    { src: "/duck9.webp", bottom: "1%", left: "25%", scale: 1.0, hiddenOnMobile: true },
+    // Start after 1.5s
+    { src: "/duck9.webp", bottom: "1%", left: "25%", scale: 1.0, hiddenOnMobile: true, waddle: true, delay: "1.5s" },
 
     // Tiny Icons
     { src: "/comment.svg", bottom: "18%", left: "15%", scale: 0.5, },
@@ -38,6 +42,7 @@ export default function RandomDucks() {
                         right: item.right,
                         rotate: item.rotate,
                         transform: `scale(${item.scale})`,
+                        ...(item.delay ? { animationDelay: item.delay } : {}),
                     }}
                 >
                     <Image
@@ -46,7 +51,7 @@ export default function RandomDucks() {
                         width={100}
                         height={100}
                         draggable={false}
-                        className="opacity-90 hover:opacity-100"
+                        className={`opacity-90 hover:opacity-100 ${item.waddle ? 'animate-waddle' : ''}`}
                     />
                 </div>
             ))}

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/private/', '/api/'],
         },
-        sitemap: 'https://willyoubemyvalentine.vercel.app/sitemap.xml',
+        sitemap: 'https://willyoubmyvalentine.vercel.app/sitemap.xml',
     };
 }

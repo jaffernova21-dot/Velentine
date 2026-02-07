@@ -13,10 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Will you be my valentine ?",
+  metadataBase: new URL("https://willyoubmyvalentine.vercel.app"),
+  title: "Will you be my valentine?",
   description: "The most unique way to ask 'Will you be my Valentine?'. Forget boring cards—send an interactive, playful experience that makes it impossible to say no. Try it now!",
   applicationName: "Will You Be My Valentine",
-  authors: [{ name: "atishaytuli" }],
+  authors: [{ name: "iloveyou" }],
   generator: "Next.js",
   keywords: [
     // Short-tail (High Volume)

@@ -2,4 +2,4 @@
 
 [https://willyoubmyvalentine.vercel.app/](https://willyoubmyvalentine.vercel.app)
 
-![Will You Be My Valentine Preview](./public/willyoubemyvalentine.webp)
+![Will You Be My Valentine Preview](./public/demo.png)
