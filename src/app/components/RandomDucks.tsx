@@ -15,7 +15,7 @@ const DECORATIONS = [
     // Start after 2s
     { src: "/duck7.webp", alt: "digital valentine card", bottom: "34%", right: "4%", scale: 0.85, waddle: true, delay: "2s" },
     // Start after 0.5s
-    { src: "/duck6.webp", alt: "interactive valentine proposal game", bottom: "10%", left: "45%", scale: 1.15, rotate: "12deg", hiddenOnMobile: true, waddle: true, delay: "0.5s" },
+    { src: "/duck6.webp", alt: "interactive valentine proposal game", bottom: "6%", left: "45%", scale: 1.15, rotate: "12deg", hiddenOnMobile: true, waddle: true, delay: "0.5s" },
     { src: "/duck8.webp", alt: "free valentine website game", bottom: "1%", right: "22%", scale: 0.85, hiddenOnMobile: true },
     // Start after 1.5s
     { src: "/duck9.webp", alt: "online valentine game duck", bottom: "1%", left: "25%", scale: 1.0, hiddenOnMobile: true, waddle: true, delay: "1.5s" },
@@ -28,9 +28,24 @@ const DECORATIONS = [
     { src: "/ily.webp", alt: "romantic valentine", bottom: "0%", right: "40%", scale: 0.15 },
 ];
 
-export default function RandomDucks() {
+interface RandomDucksProps {
+    variant?: 'default' | 'hidden' | 'spinning';
+}
+
+export default function RandomDucks({ variant = 'default' }: RandomDucksProps) {
+    if (variant === 'hidden') return null;
+
     return (
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+            <style jsx global>{`
+                @keyframes smooth-spin {
+                    from { rotate: 0deg; }
+                    to { rotate: 360deg; }
+                }
+                .animate-smooth-spin {
+                    animation: smooth-spin 3s linear infinite;
+                }
+            `}</style>
             {DECORATIONS.map((item, index) => (
                 <div
                     key={index}
@@ -40,19 +55,21 @@ export default function RandomDucks() {
                         left: item.left,
                         bottom: item.bottom,
                         right: item.right,
-                        rotate: item.rotate,
+                        rotate: item.rotate || '0deg',
                         transform: `scale(${item.scale})`,
-                        ...(item.delay ? { animationDelay: item.delay } : {}),
+                        ...((item.delay && variant !== 'spinning') ? { animationDelay: item.delay } : {}),
                     }}
                 >
-                    <Image
-                        src={item.src}
-                        alt={item.alt}
-                        width={100}
-                        height={100}
-                        draggable={false}
-                        className={`opacity-90 hover:opacity-100 ${item.waddle ? 'animate-waddle' : ''}`}
-                    />
+                    <div className={variant === 'spinning' ? 'animate-smooth-spin' : ''}>
+                        <Image
+                            src={item.src}
+                            alt={item.alt}
+                            width={100}
+                            height={100}
+                            draggable={false}
+                            className={`opacity-90 hover:opacity-100 ${item.waddle && variant !== 'spinning' ? 'animate-waddle' : ''}`}
+                        />
+                    </div>
                 </div>
             ))}
         </div>

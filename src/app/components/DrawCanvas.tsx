@@ -9,12 +9,19 @@ const BRUSH_COLOR = "rgba(255, 45, 85, 0.25)";
 // Hotspot at 3 21
 const CURSOR_URL = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75 1.84-1.83zM3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z' fill='%231a1818'/%3E%3C/svg%3E") 3 21, auto`;
 
+import { Stroke } from "../utils/encode";
+
 interface DrawCanvasProps {
     onClose: () => void;
+    readOnly?: boolean;
+    initialData?: Stroke[];
+    onShare?: (strokes: Stroke[]) => void;
 }
 
-export default function DrawCanvas({ onClose }: DrawCanvasProps) {
+export default function DrawCanvas({ onClose, readOnly = false, initialData, onShare }: DrawCanvasProps) {
     const [moves, setMoves] = useState(0);
+    const [strokes, setStrokes] = useState<Stroke[]>([]);
+    const currentPath = useRef<{ x: number, y: number }[]>([]);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
@@ -67,6 +74,9 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
             const canvas = canvasRef.current;
             const rect = containerRef.current.getBoundingClientRect();
 
+            // Guard: ensure the container has dimensions
+            if (rect.width === 0 || rect.height === 0) return;
+
             const dpr = window.devicePixelRatio || 1;
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
@@ -80,11 +90,27 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 setContext(ctx);
-                drawPreDrawnShape(ctx, rect.width, rect.height);
+
+                // Draw heart guide on initialization (but don't add to strokes)
+                if (!readOnly && !initialData) {
+                    drawHeartGuide(ctx, rect.width, rect.height);
+                }
+
                 setInitialized(true);
             }
         }
     };
+
+    // For readOnly/embedded mode, initialize canvas on mount with a slight delay
+    // to ensure container has rendered with dimensions
+    useEffect(() => {
+        if (readOnly && !initialized) {
+            const timer = setTimeout(() => {
+                initCanvas();
+            }, 50);
+            return () => clearTimeout(timer);
+        }
+    }, [readOnly, initialized]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -95,8 +121,6 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                 const dpr = window.devicePixelRatio || 1;
                 canvas.width = rect.width * dpr;
                 canvas.height = rect.height * dpr;
-                // canvas.style.width = `${rect.width}px`;
-                // canvas.style.height = `${rect.height}px`;
 
                 const ctx = canvas.getContext('2d');
                 if (ctx) {
@@ -104,39 +128,96 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                     ctx.lineCap = 'round';
                     ctx.lineJoin = 'round';
                     setContext(ctx);
-                    drawPreDrawnShape(ctx, rect.width, rect.height);
+
+                    // Re-draw heart guide and strokes on resize
+                    if (!readOnly && !initialData) {
+                        drawHeartGuide(ctx, rect.width, rect.height);
+                    }
+
+                    // Replay recorded strokes
+                    strokes.forEach(stroke => {
+                        if (stroke.path.length > 0) {
+                            let p1 = stroke.path[0];
+                            for (let i = 1; i < stroke.path.length; i++) {
+                                const p2 = stroke.path[i];
+                                drawTexturedStroke(ctx, p1, p2, stroke.color);
+                                p1 = p2;
+                            }
+                        }
+                    });
                 }
             }
         };
 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    }, [strokes]);
 
-    const drawPreDrawnShape = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-        // Draw a straight "I" using the textured stroke
-        // We simulate a mouse drag from top to bottom
+    // Initial Replay
+    useEffect(() => {
+        if (initialData && context && initialized) {
+            // Wait for pre-draw
+            const timer = setTimeout(() => {
+                initialData.forEach((stroke, index) => {
+                    setTimeout(() => {
+                        if (stroke.path.length > 0) {
+                            let p1 = stroke.path[0];
+                            for (let i = 1; i < stroke.path.length; i++) {
+                                const p2 = stroke.path[i];
+                                drawTexturedStroke(context, p1, p2, stroke.color);
+                                p1 = p2;
+                            }
+                        }
+                    }, index * 10); // Much faster replay for preview
+                });
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [context, initialData, initialized]);
+
+    // Generate heart points for a given canvas size
+    const generateHeartPoints = (width: number, height: number): { x: number, y: number }[] => {
         const cx = width / 2;
         const cy = height / 2;
+        const scale = 3.5;
 
-        const startY = cy - 60;
-        const endY = cy + 60;
+        const points: { x: number, y: number }[] = [];
+        for (let t = 0; t <= Math.PI * 2; t += 0.1) {
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+            points.push({
+                x: cx + x * scale,
+                y: cy + y * scale
+            });
+        }
+        // Close the loop
+        if (points.length > 0) {
+            points.push({ ...points[0] });
+        }
+        return points;
+    };
 
-        // Draw multiple passes to make it solid enough but textured
-        // Since drawTexturedStroke is density dependent on "overlapping steps",
-        // passing a direct line from A to B is fine.
+    const drawHeartGuide = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+        const points = generateHeartPoints(width, height);
 
-        // We need "brushes" to be somewhat consistent.
-        // Use a slightly more opaque color for the pre-drawn shape so it stands out?
-        // Or overlay multiple strokes.
-        // Let's use PRE_DRAWN_COLOR (solid #FF2D55) but with opacity?
-        // The helper uses BRUSH_COLOR locally. Let's patch helper to accept color.
+        // Draw the heart visually
+        if (points.length > 1) {
+            let p1 = points[0];
+            for (let i = 1; i < points.length; i++) {
+                const p2 = points[i];
+                drawTexturedStroke(ctx, p1, p2, BRUSH_COLOR);
+                p1 = p2;
+            }
 
-        // Since BRUSH_COLOR is 0.25 opacity, reusing it might be too faint for a "Prompt".
-        // Let's use a slightly stronger version for the I.
-        // Use exact same BRUSH_COLOR (0.25 opacity) to match user strokes exactly
-        // We draw nearly identical to how a user would draw a single firm line
-        drawTexturedStroke(ctx, { x: cx, y: startY }, { x: cx, y: endY }, BRUSH_COLOR);
+            // Save the heart as the first stroke
+            setStrokes(prev => {
+                // Only add if not already present (prevent duplicates)
+                if (prev.length === 0) {
+                    return [{ color: BRUSH_COLOR, path: points }];
+                }
+                return prev;
+            });
+        }
     };
 
     const getPos = (e: React.MouseEvent | React.TouchEvent) => {
@@ -155,10 +236,11 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
     };
 
     const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
-        if (moves >= MAX_MOVES || !context) return;
+        if (readOnly || moves >= MAX_MOVES || !context) return;
         setIsDrawing(true);
         const pos = getPos(e);
         lastPos.current = pos;
+        currentPath.current = [pos]; // Start new path
 
         drawTexturedStroke(context, pos, { x: pos.x + 0.1, y: pos.y + 0.1 });
     };
@@ -170,6 +252,7 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
         if (dist < 1) return;
 
         drawTexturedStroke(context, lastPos.current, currentPos);
+        currentPath.current.push(currentPos); // Store point
 
         lastPos.current = currentPos;
     };
@@ -179,6 +262,13 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
             setIsDrawing(false);
             setMoves(prev => prev + 1);
             lastPos.current = null;
+
+            // Save stroke - IMPORTANT: make a copy of the path array!
+            if (currentPath.current.length > 0) {
+                const pathCopy = currentPath.current.map(p => ({ x: p.x, y: p.y }));
+                setStrokes(prev => [...prev, { color: BRUSH_COLOR, path: pathCopy }]);
+            }
+            currentPath.current = [];
         }
     };
 
@@ -186,8 +276,9 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
         if (context && containerRef.current) {
             const rect = containerRef.current.getBoundingClientRect();
             context.clearRect(0, 0, rect.width, rect.height);
-            drawPreDrawnShape(context, rect.width, rect.height);
+            // Don't redraw heart - user wanted blank canvas after reset
             setMoves(0);
+            setStrokes([]);
         }
     };
 
@@ -202,15 +293,17 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
 
     return (
         <LazyMotion features={domAnimation}>
-            {/* Backdrop */}
-            <m.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="fixed inset-0 z-[65] bg-black/40 backdrop-blur-sm"
-                onClick={onClose}
-            />
+            {/* Backdrop - Only show when NOT readOnly */}
+            {!readOnly && (
+                <m.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="fixed inset-0 z-[65] bg-black/40 backdrop-blur-sm"
+                    onClick={onClose}
+                />
+            )}
 
             <m.div
                 initial={{ opacity: 0, scale: 0.97 }}
@@ -218,32 +311,37 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                 exit={{ opacity: 0, scale: 0.97 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 onAnimationComplete={initCanvas}
-                // Reduced radius: rounded-lg
-                // Dashed border: border-2 border-dashed border-[#FF2D55]
-                // Dotted BG: radial-gradient pattern
-                className="absolute left-8 right-8 top-4 bottom-8 z-[70] bg-[#f8f8f8] rounded-lg shadow-2xl overflow-hidden flex flex-col border-2 border-dashed border-[#FF2D55]"
+                // Conditional styling: Modal vs Embedded
+                className={readOnly
+                    ? "w-full h-full relative overflow-hidden flex flex-col" // Embedded (Preview) - need flex for child to grow
+                    : "absolute left-8 right-8 top-4 bottom-8 z-[70] bg-[#f8f8f8] rounded-lg shadow-2xl overflow-hidden flex flex-col border-2 border-dashed border-[#FF2D55]" // Modal (Drawing)
+                }
                 style={{
                     willChange: 'transform, opacity',
-                    backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)',
+                    backgroundImage: !readOnly ? 'radial-gradient(#e5e7eb 1px, transparent 1px)' : undefined,
                     backgroundSize: '20px 20px'
                 }}
             >
-                {/* Moves Counter - Top Left */}
-                <div className="absolute top-4 left-6 z-10 text-sm font-bold font-mono text-gray-400 tracking-wider pointer-events-none">
-                    {moves}/5 MOVES
-                </div>
+                {/* Moves Counter - Top Left (hide in readOnly) */}
+                {!readOnly && (
+                    <div className="absolute top-4 left-6 z-10 text-sm font-bold font-mono text-gray-400 tracking-wider pointer-events-none">
+                        {moves}/5 MOVES
+                    </div>
+                )}
 
-                {/* X Button inside panel - Circular */}
-                <div className="absolute top-4 right-4 z-10">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        aria-label="Close drawing canvas"
-                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-bold hover:scale-105 transition-all shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF2D55]"
-                    >
-                        ✕
-                    </button>
-                </div>
+                {/* X Button inside panel - Circular (hide in readOnly) */}
+                {!readOnly && (
+                    <div className="absolute top-4 right-4 z-10">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            aria-label="Close drawing canvas"
+                            className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-bold hover:scale-105 transition-all shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF2D55]"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
 
                 {/* Canvas Area with Overlay Controls */}
                 <div
@@ -266,51 +364,47 @@ export default function DrawCanvas({ onClose }: DrawCanvasProps) {
                         className="block w-full h-full touch-none relative z-0"
                     />
 
-                    {/* UI Overlay - Positioned absolute on top of canvas */}
-                    {/* pointer-events-none ensures clicks pass through empty space to canvas */}
-                    <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-end p-6 pb-6">
-                        <div className="flex flex-col md:flex-row items-stretch md:items-end justify-between gap-4">
-                            {/* Left Side: Text and Reset */}
-                            <div className="flex flex-col gap-1 pointer-events-auto">
-                                <h2 className="text-xl font-bold text-black mb-1">Draw to Impress</h2>
-                                <div className="flex flex-col md:flex-row md:items-end gap-2 md:gap-6">
-                                    <p className="text-sm text-gray-500 leading-relaxed font-medium">
-                                        There is a new shape every day. Draw something<br className="hidden md:block" />
-                                        in 5 moves or less. Submit to see what others made.
-                                    </p>
-                                    <button
-                                        type="button"
-                                        onClick={handleReset}
-                                        aria-label="Reset canvas to initial state"
-                                        className="text-sm font-normal text-gray-500 underline underline-offset-4 hover:text-black transition-colors whitespace-nowrap mb-1 self-start md:self-auto focus:outline-none focus-visible:text-black"
-                                    >
-                                        Reset Canvas
-                                    </button>
+                    {/* UI Overlay - Only show when NOT in readOnly mode */}
+                    {!readOnly && (
+                        <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-end p-4 md:p-6 pb-6">
+                            <div className="flex flex-col md:flex-row items-stretch md:items-end justify-between gap-3 md:gap-4">
+                                {/* Left Side: Text */}
+                                <div className="flex flex-col gap-0.5 pointer-events-auto">
+                                    <h2 className="text-lg md:text-xl font-bold text-black mb-1">Draw something just for them,</h2>
+                                    <div className="flex flex-col md:flex-row md:items-end gap-1 md:gap-6">
+                                        <p className="text-xs md:text-sm text-gray-500 leading-relaxed font-medium">
+                                            We've started with a heart, now you draw something in 5 moves <br className="hidden md:block" /> which will turn into a
+                                            beautiful card for your Valentine make your loved one feel special.
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Right Side: Buttons and Moves */}
-                            <div className="flex flex-col items-end gap-3 pointer-events-auto w-full md:w-auto mt-2 md:mt-0">
-                                <div className="flex gap-3 w-full md:w-auto justify-stretch md:justify-end">
-                                    <button
-                                        type="button"
-                                        aria-label="Submit your drawing"
-                                        className="flex-1 md:flex-none rounded-full px-6 py-2 border border-b-[3px] border-black cursor-pointer bg-black text-white hover:bg-gray-900 transition-all active:border-b active:translate-y-[2px] font-bold text-sm shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF2D55]"
-                                    >
-                                        Submit
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleSave}
-                                        aria-label="Save drawing as image"
-                                        className="flex-1 md:flex-none rounded-full px-6 py-2 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] text-white hover:brightness-110 transition-all active:border-b active:translate-y-[2px] font-bold text-sm shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
-                                    >
-                                        Save
-                                    </button>
+                                {/* Right Side: Buttons */}
+                                <div className="flex flex-col items-center md:items-end gap-3 pointer-events-auto w-full md:w-auto mt-1 md:mt-0">
+                                    <div className="flex items-center justify-center md:justify-end gap-4 w-full md:w-auto">
+                                        <button
+                                            type="button"
+                                            onClick={handleReset}
+                                            aria-label="Reset canvas to initial state"
+                                            className="text-xs md:text-sm font-normal text-gray-500 underline underline-offset-4 hover:text-black transition-colors whitespace-nowrap focus:outline-none focus-visible:text-black"
+                                        >
+                                            Reset Canvas
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => onShare?.(strokes)}
+                                            aria-label="Preview your card"
+                                            disabled={moves === 0}
+                                            className="rounded-full px-5 md:px-6 py-1.5 md:py-2 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium text-sm md:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Preview
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </m.div>
         </LazyMotion>

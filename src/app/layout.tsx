@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Chewy } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +10,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const chewy = Chewy({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-chewy",
 });
 
 export const viewport: Viewport = {
@@ -27,7 +33,7 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL("https://willyoubmyvalentine.vercel.app"),
   title: "Will You Be My Valentine?",
-  description: "The most unique way to ask 'Will you be my Valentine?'. Forget boring cards—send an interactive, playful experience that makes it impossible to say no. Try it now!",
+  description: "The most unique way to ask 'Will you be my Valentine?'. Forget boring cards send an interactive, playful experience that makes it impossible to say no. Try it now!",
   applicationName: "Will You Be My Valentine",
   authors: [{ name: "iloveyou" }],
   generator: "Next.js",
@@ -174,13 +180,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet" />
-      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${chewy.variable} antialiased`}
       >
         {children}
         <script

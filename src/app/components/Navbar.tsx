@@ -2,13 +2,16 @@ import Image from "next/image";
 
 interface NavbarProps {
     onDrawClick: () => void;
+    onGalleryClick: () => void;
     isDrawOpen: boolean;
 }
 
-export default function Navbar({ onDrawClick, isDrawOpen }: NavbarProps) {
+export default function Navbar({ onDrawClick, onGalleryClick, isDrawOpen }: NavbarProps) {
     return (
         <nav className="flex items-center justify-between p-4 px-8 relative z-[60]" role="navigation" aria-label="Main navigation">
-            <Image src={'/heart-fill.gif'} alt="valentines day animated heart" width={45} height={45} />
+            <div className="flex items-center gap-4">
+                <Image src={'/heart-fill.gif'} alt="valentines day animated heart" width={45} height={45} />
+            </div>
             <div className="flex gap-2">
                 <button
                     type="button"
@@ -21,10 +24,11 @@ export default function Navbar({ onDrawClick, isDrawOpen }: NavbarProps) {
                 </button>
                 <button
                     type="button"
-                    aria-label="Share this valentine with someone special"
+                    onClick={onGalleryClick}
+                    aria-label="View community gallery"
                     className="rounded-full px-6 py-1 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium w-[90px] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
                 >
-                    Share
+                    Gallery
                 </button>
             </div>
         </nav>

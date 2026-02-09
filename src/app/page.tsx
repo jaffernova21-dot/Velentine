@@ -1,5 +1,6 @@
 import Image from "next/image";
 import RandomDucks from "@/app/components/RandomDucks";
+import { Suspense } from "react";
 import HomeClient from "@/app/components/HomeClient";
 
 export default async function Home() {
@@ -13,24 +14,13 @@ export default async function Home() {
           fill
           priority
           className="object-cover object-center"
-          quality={80}
         />
       </div>
 
-      <HomeClient />
-      <RandomDucks />
-      <div className="flex flex-col items-center justify-center relative z-10 px-4 text-center">
-        <h1
-          className="text-5xl md:text-8xl text-[#FF2D55] mb-8 leading-tighter max-w-5xl mx-auto tracking-wide uppercase mt-10 md:mt-0"
-          style={{
-            fontFamily: '"Chewy", cursive',
-            textShadow: '4px 4px 0px #000000',
-            WebkitTextStroke: '2px black'
-          }}
-        >
-          Will you be my <br /> Valentine ?
-        </h1>
-      </div>
+      <Suspense fallback={<div className="fixed inset-0 bg-white z-50 flex items-center justify-center">Loading...</div>}>
+        <HomeClient />
+      </Suspense>
+
     </main>
   );
 }
