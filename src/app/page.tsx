@@ -1,5 +1,4 @@
 import Image from "next/image";
-import RandomDucks from "@/app/components/RandomDucks";
 import { Suspense } from "react";
 import HomeClient from "@/app/components/HomeClient";
 
@@ -10,7 +9,7 @@ export default async function Home() {
       <div className="absolute inset-0 -z-20">
         <Image
           src="/clouds1.webp"
-          alt="valentines day"
+          alt="will you be my valentine"
           fill
           priority
           className="object-cover object-center"

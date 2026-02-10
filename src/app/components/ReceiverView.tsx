@@ -194,7 +194,7 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
             <nav className="fixed top-0 left-0 w-full flex items-center justify-between p-4 px-8 z-[60]">
                 {/* Left Side: Heart + Try it */}
                 <div className="flex items-center gap-4">
-                    <Image src={'/heart-fill.gif'} alt="valentines day animated heart" width={45} height={45} />
+                    <Image src={'/heart-fill.gif'} alt="will you be my valentine" width={45} height={45} />
                     <button
                         onClick={() => window.location.href = '/'}
                         className="rounded-full px-5 md:px-6 py-1 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium text-xs md:text-sm whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
@@ -226,12 +226,12 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
                 <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-center justify-center p-4" onClick={() => setShowCardModal(false)}>
                     <div className="relative w-full max-w-md bg-pink-50 rounded-3xl p-8 shadow-2xl animate-in zoom-in duration-300 overflow-hidden" onClick={e => e.stopPropagation()}>
                         {/* Decorations */}
-                        <Image src="/bow.webp" alt="online valentine decoration" width={64} height={64} className="absolute top-0 left-0 z-20 -rotate-20" />
-                        <Image src="/avocado.svg" alt="funny valentine ask sticker" width={56} height={56} className="absolute bottom-0 left-2 z-20" />
-                        <Image src="/msg.webp" alt="valentine message sticker" width={48} height={48} className="absolute top-12 -right-2 z-20 rotate-12" />
-                        <Image src="/heart.webp" alt="valentine card heart" width={32} height={32} className="absolute top-30 right-4 z-20 -rotate-10" />
-                        <Image src="/ily.webp" alt="valentine game asset" width={32} height={32} className="absolute bottom-32 left-6 z-20 rotate-10" />
-                        <Image src="/love.svg" alt="valentine link watermark" width={128} height={128} className="absolute -bottom-6 -right-6 opacity-30" />
+                        <Image src="/bow.webp" alt="will you be my valentine" width={64} height={64} className="absolute top-0 left-0 z-20 -rotate-20" />
+                        <Image src="/avocado.svg" alt="will you be my valentine sticker" width={56} height={56} className="absolute bottom-0 left-2 z-20" />
+                        <Image src="/msg.webp" alt="will you be my valentine message" width={48} height={48} className="absolute top-12 -right-2 z-20 rotate-12" />
+                        <Image src="/heart.webp" alt="will you be my valentine heart" width={32} height={32} className="absolute top-30 right-4 z-20 -rotate-10" />
+                        <Image src="/ily.webp" alt="will you be my valentine i love you" width={32} height={32} className="absolute bottom-32 left-6 z-20 rotate-10" />
+                        <Image src="/love.svg" alt="will you be my valentine" width={128} height={128} className="absolute -bottom-6 -right-6 opacity-30" />
 
                         {/* Close Button - Heart Style */}
                         <button
@@ -292,14 +292,14 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
 
                     <div className="w-full max-w-sm bg-white/40 backdrop-blur-md p-6 md:p-8 rounded-3xl border-2 border-white/50 shadow-xl animate-in fade-in zoom-in duration-700 delay-200 mt-4 relative overflow-hidden">
                         {/* Decorations */}
-                        <Image src="/bow.webp" alt="cute valentine ways" width={48} height={48} className="absolute top-1 left-1 z-20 -rotate-12 drop-shadow-md" />
-                        <Image src="/bow.webp" alt="cute valentine ways" width={48} height={48} className="absolute top-1 right-1 z-20 rotate-12 drop-shadow-md" />
+                        <Image src="/bow.webp" alt="will you be my valentine" width={48} height={48} className="absolute top-1 left-1 z-20 -rotate-12 drop-shadow-md" />
+                        <Image src="/bow.webp" alt="will you be my valentine" width={48} height={48} className="absolute top-1 right-1 z-20 rotate-12 drop-shadow-md" />
 
-                        <Image src="/love.svg" alt="willyoubemyvalentine" width={100} height={100} className="absolute -bottom-4 -right-4 opacity-40 pointer-events-none" />
-                        <Image src="/love.svg" alt="willyoubemyvalentine" width={100} height={100} className="absolute -bottom-4 -left-4 opacity-40 pointer-events-none" />
+                        <Image src="/love.svg" alt="will you be my valentine" width={100} height={100} className="absolute -bottom-4 -right-4 opacity-40 pointer-events-none" />
+                        <Image src="/love.svg" alt="will you be my valentine" width={100} height={100} className="absolute -bottom-4 -left-4 opacity-40 pointer-events-none" />
 
                         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 p-3 border-2 border-white/50 shadow-inner">
-                            <Image src="/heart.webp" alt="digital valentine card" width={64} height={64} className="w-full h-full object-contain" />
+                            <Image src="/heart.webp" alt="will you be my valentine card" width={64} height={64} className="w-full h-full object-contain" />
                         </div>
 
                         <div className="space-y-3 mb-2">
@@ -380,12 +380,12 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
                 <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex items-center justify-center p-4">
                     <div className="relative w-full max-w-md bg-pink-50 rounded-3xl p-8 shadow-2xl animate-in zoom-in duration-500 overflow-hidden">
                         {/* Decorations */}
-                        <Image src="/bow.webp" alt="online valentine decoration" width={64} height={64} className="absolute top-0 left-0 z-20 -rotate-20" />
-                        <Image src="/avocado.svg" alt="funny valentine ask sticker" width={56} height={56} className="absolute bottom-0 left-2 z-20" />
-                        <Image src="/msg.webp" alt="valentine message sticker" width={48} height={48} className="absolute top-12 -right-2 z-20 rotate-12" />
-                        <Image src="/heart.webp" alt="valentine card heart" width={32} height={32} className="absolute top-30 right-4 z-20 -rotate-10" />
-                        <Image src="/ily.webp" alt="valentine game asset" width={32} height={32} className="absolute bottom-32 left-6 z-20 rotate-10" />
-                        <Image src="/love.svg" alt="valentine link watermark" width={128} height={128} className="absolute -bottom-6 -right-6 opacity-30" />
+                        <Image src="/bow.webp" alt="will you be my valentine" width={64} height={64} className="absolute top-0 left-0 z-20 -rotate-20" />
+                        <Image src="/avocado.svg" alt="will you be my valentine sticker" width={56} height={56} className="absolute bottom-0 left-2 z-20" />
+                        <Image src="/msg.webp" alt="will you be my valentine message" width={48} height={48} className="absolute top-12 -right-2 z-20 rotate-12" />
+                        <Image src="/heart.webp" alt="will you be my valentine heart" width={32} height={32} className="absolute top-30 right-4 z-20 -rotate-10" />
+                        <Image src="/ily.webp" alt="will you be my valentine i love you" width={32} height={32} className="absolute bottom-32 left-6 z-20 rotate-10" />
+                        <Image src="/love.svg" alt="will you be my valentine" width={128} height={128} className="absolute -bottom-6 -right-6 opacity-30" />
 
                         {/* Card Content */}
                         <div className="text-center relative z-10 pt-4">

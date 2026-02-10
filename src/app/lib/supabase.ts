@@ -108,3 +108,67 @@ export const logCardCreation = async (
         return { success: false, error: 'Unexpected error' };
     }
 };
+
+// Short link: Save full card data and return a short ID
+export const saveSharedCard = async (
+    sender: string,
+    receiver: string,
+    drawing: Stroke[],
+    quoteIndex: number
+): Promise<{ success: boolean; id?: string; error?: string }> => {
+    if (!supabase) {
+        console.warn('Supabase not configured. Cannot create short link.');
+        return { success: false, error: 'Supabase not configured' };
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('shared_cards')
+            .insert([{ sender, receiver, drawing, quote_index: quoteIndex }])
+            .select('id')
+            .single();
+
+        if (error) {
+            console.error('Failed to save shared card:', error);
+            return { success: false, error: error.message };
+        }
+
+        return { success: true, id: data.id };
+    } catch (e) {
+        console.error('Unexpected error saving shared card:', e);
+        return { success: false, error: 'Unexpected error' };
+    }
+};
+
+// Short link: Fetch card data by ID
+export interface SharedCardData {
+    sender: string;
+    receiver: string;
+    drawing: Stroke[];
+    quote_index: number;
+}
+
+export const fetchSharedCard = async (id: string): Promise<SharedCardData | null> => {
+    if (!supabase) {
+        console.warn('Supabase not configured. Cannot fetch shared card.');
+        return null;
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('shared_cards')
+            .select('sender, receiver, drawing, quote_index')
+            .eq('id', id)
+            .single();
+
+        if (error) {
+            console.error('Failed to fetch shared card:', error);
+            return null;
+        }
+
+        return data as SharedCardData;
+    } catch (e) {
+        console.error('Unexpected error fetching shared card:', e);
+        return null;
+    }
+};

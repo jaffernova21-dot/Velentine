@@ -347,13 +347,13 @@ export default function Gallery({ isOpen, onClose }: GalleryProps) {
                             className="relative w-full max-w-md bg-rose-50 rounded-2xl p-8 shadow-2xl overflow-hidden"
                         >
                             {/* Decorations */}
-                            <Image src="/bow.webp" alt="online valentine decoration" width={64} height={64} className="absolute top-0 left-0 z-20 -rotate-20" />
-                            <Image src="/avocado.svg" alt="funny valentine ask sticker" width={56} height={56} className="absolute bottom-0 left-2 z-20" />
-                            <Image src="/love.svg" alt="digital valentine background" width={128} height={128} className="absolute bottom-26 -right-6 opacity-30" />
-                            <Image src="/love.svg" alt="valentine link watermark" width={128} height={128} className="absolute -bottom-6 -right-6 opacity-30" />
+                            <Image src="/bow.webp" alt="will you be my valentine" width={64} height={64} className="absolute top-0 left-0 z-20 -rotate-20" />
+                            <Image src="/avocado.svg" alt="will you be my valentine sticker" width={56} height={56} className="absolute bottom-0 left-2 z-20" />
+                            <Image src="/love.svg" alt="will you be my valentine" width={128} height={128} className="absolute bottom-26 -right-6 opacity-30" />
+                            <Image src="/love.svg" alt="will you be my valentine" width={128} height={128} className="absolute -bottom-6 -right-6 opacity-30" />
 
-                            <Image src="/heart.webp" alt="valentine card heart" width={32} height={32} className="absolute top-30 right-4 z-20 -rotate-10" />
-                            <Image src="/ily.webp" alt="valentine game asset" width={32} height={32} className="absolute bottom-32 left-6 z-20 rotate-10" />
+                            <Image src="/heart.webp" alt="will you be my valentine heart" width={32} height={32} className="absolute top-30 right-4 z-20 -rotate-10" />
+                            <Image src="/ily.webp" alt="will you be my valentine i love you" width={32} height={32} className="absolute bottom-32 left-6 z-20 rotate-10" />
                             {/* Close Button - Heart Style */}
                             <button
                                 onClick={() => setSelectedCard(null)}

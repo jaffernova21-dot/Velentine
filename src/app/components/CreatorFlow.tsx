@@ -7,7 +7,7 @@ import DrawCanvas from './DrawCanvas';
 import Gallery from './Gallery';
 import GameInfoModal from './GameInfoModal';
 import { Stroke, encodeData, ROMANTIC_QUOTES } from '../utils/encode';
-import { saveCardToGallery, logCardCreation } from '../lib/supabase';
+import { saveCardToGallery, logCardCreation, saveSharedCard } from '../lib/supabase';
 import RandomDucks from './RandomDucks';
 import { RefreshCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -162,23 +162,36 @@ export default function CreatorFlow() {
         if (!senderName.trim() || !receiverName.trim()) return;
         setSaving(true);
 
-        const data = {
-            s: senderName.trim(),
-            r: receiverName.trim(),
-            d: pendingStrokes,
-            q: quoteIndex
-        };
-
-        const encoded = encodeData(data);
-        const url = `${window.location.origin}/?data=${encoded}`;
-        setShareUrl(url);
+        const trimmedSender = senderName.trim();
+        const trimmedReceiver = receiverName.trim();
 
         // Log every card creation (for analytics)
-        await logCardCreation(senderName.trim(), receiverName.trim());
+        await logCardCreation(trimmedSender, trimmedReceiver);
+
+        // Try short link via Supabase first
+        const shortResult = await saveSharedCard(trimmedSender, trimmedReceiver, pendingStrokes, quoteIndex);
+
+        let url: string;
+        if (shortResult.success && shortResult.id) {
+            // Short link! 🎉
+            url = `${window.location.origin}/?id=${shortResult.id}`;
+        } else {
+            // Fallback to encoded data URL
+            const data = {
+                s: trimmedSender,
+                r: trimmedReceiver,
+                d: pendingStrokes,
+                q: quoteIndex
+            };
+            const encoded = encodeData(data);
+            url = `${window.location.origin}/?data=${encoded}`;
+        }
+
+        setShareUrl(url);
 
         // Save to gallery by default
         if (shareToGallery) {
-            const result = await saveCardToGallery(senderName.trim(), receiverName.trim(), pendingStrokes);
+            const result = await saveCardToGallery(trimmedSender, trimmedReceiver, pendingStrokes);
             if (result.success) {
                 setIsShared(true);
             }
@@ -192,10 +205,27 @@ export default function CreatorFlow() {
 
     const [isCopied, setIsCopied] = useState(false);
 
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(shareUrl);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            // Fallback for older browsers or if permission denied
+            const textArea = document.createElement("textarea");
+            textArea.value = shareUrl;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
     };
 
     return (
@@ -234,7 +264,7 @@ export default function CreatorFlow() {
                         </p>
                     </div>
 
-                    <div className="w-full max-w-sm bg-white/40 backdrop-blur-md p-6 rounded-3xl border-2 border-white/50 shadow-xl animate-in fade-in zoom-in duration-700 delay-200 mt-4">
+                    <div className="w-full max-w-sm bg-white/40 backdrop-blur-md p-6 rounded-3xl border-2 border-white/50 shadow-xl animate-in fade-in zoom-in duration-700 delay-200 mt-12 md:mt-4">
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-left text-[#FF2D55] font-bold mb-1 ml-1 text-sm uppercase tracking-wider">Who is this for?</label>
@@ -302,10 +332,10 @@ export default function CreatorFlow() {
 
                             <div className="bg-white rounded-xl p-5 shadow-sm mb-4 text-center border border-gray-100 transform rotate-1 relative overflow-hidden ring-4 ring-pink-50/50">
                                 {/* Decorations */}
-                                <Image src="/bow.webp" alt="valentine card ideas" width={48} height={48} className="absolute -top-3 -left-3 z-10 drop-shadow-md -rotate-20" />
-                                <Image src="/heart.webp" alt="14 feb 2026 valentine" width={28} height={28} className="absolute top-3 right-4 z-20 -rotate-10" />
-                                <Image src="/avocado.svg" alt="cute valentine ways" width={48} height={48} className="absolute bottom-0 left-2 z-20" />
-                                <Image src="/ily.webp" alt="digital valentine link" width={28} height={28} className="absolute bottom-28 left-4 z-20 rotate-10" />
+                                <Image src="/bow.webp" alt="will you be my valentine" width={48} height={48} className="absolute -top-3 -left-3 z-10 drop-shadow-md -rotate-20" />
+                                <Image src="/heart.webp" alt="will you be my valentine heart" width={28} height={28} className="absolute top-3 right-4 z-20 -rotate-10" />
+                                <Image src="/avocado.svg" alt="will you be my valentine sticker" width={48} height={48} className="absolute bottom-0 left-2 z-20" />
+                                <Image src="/ily.webp" alt="will you be my valentine i love you" width={28} height={28} className="absolute bottom-28 left-4 z-20 rotate-10" />
                                 <Image src="/love.svg" alt="will you be my valentine" width={112} height={112} className="absolute -bottom-6 -right-6 opacity-30 pointer-events-none" />
 
                                 <p className="text-gray-800 text-sm font-bold mb-4 italic px-4">
@@ -335,7 +365,6 @@ export default function CreatorFlow() {
                                             placeholder="Your Name"
                                             className="border-b-2 border-gray-300 focus:border-[#FF2D55] outline-none px-2 py-0 w-36 text-xl text-gray-600 placeholder:text-gray-300 bg-transparent text-center"
                                             style={{ fontFamily: '"Chewy", cursive' }}
-                                            autoFocus
                                         />
                                     </div>
                                 </div>
@@ -365,12 +394,12 @@ export default function CreatorFlow() {
                 <div className="fixed inset-0 z-[80] backdrop-blur-xs flex items-center justify-center p-4">
                     <div className="w-full max-w-sm bg-white/90 backdrop-blur-lg p-0 rounded-3xl border-2 border-white/50 shadow-2xl text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden">
                         {/* Decorative love icon */}
-                        <Image src="/love.svg" alt="valentine decoration" width={120} height={120} className="absolute -top-4 -right-10 opacity-30 pointer-events-none" />
-                        <Image src="/love.svg" alt="valentine decoration" width={120} height={120} className="absolute -bottom-4 -left-6 opacity-30 pointer-events-none" />
+                        <Image src="/love.svg" alt="will you be my valentine" width={120} height={120} className="absolute -top-4 -right-10 opacity-30 pointer-events-none" />
+                        <Image src="/love.svg" alt="will you be my valentine" width={120} height={120} className="absolute -bottom-4 -left-6 opacity-30 pointer-events-none" />
 
                         <div className="p-8">
                             <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl border-1 border-green-200 p-2">
-                                <Image src="/heart.webp" alt="valentine app" width={48} height={48} className="w-full h-full object-contain" />
+                                <Image src="/heart.webp" alt="will you be my valentine" width={48} height={48} className="w-full h-full object-contain" />
                             </div>
                             <h3 className="text-2xl font-bold mb-3 text-gray-900">Card Ready!</h3>
                             <div className="mb-8">

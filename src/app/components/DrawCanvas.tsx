@@ -2,6 +2,8 @@
 
 import { useRef, useEffect, useState } from "react";
 import { LazyMotion, domAnimation, m } from "framer-motion";
+import { Wand2 } from "lucide-react";
+import { TEMPLATES, Template } from "../utils/templates";
 
 const MAX_MOVES = 5;
 const BRUSH_COLOR = "rgba(255, 45, 85, 0.25)";
@@ -21,6 +23,7 @@ interface DrawCanvasProps {
 export default function DrawCanvas({ onClose, readOnly = false, initialData, onShare }: DrawCanvasProps) {
     const [moves, setMoves] = useState(0);
     const [strokes, setStrokes] = useState<Stroke[]>([]);
+    const [showTemplates, setShowTemplates] = useState(false);
     const currentPath = useRef<{ x: number, y: number }[]>([]);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -113,44 +116,55 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
     }, [readOnly, initialized]);
 
     useEffect(() => {
+        let timeoutId: NodeJS.Timeout;
+
         const handleResize = () => {
-            setInitialized(false);
-            if (canvasRef.current && containerRef.current) {
-                const canvas = canvasRef.current;
-                const rect = containerRef.current.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                canvas.width = rect.width * dpr;
-                canvas.height = rect.height * dpr;
+            // Clear any pending resize handling
+            clearTimeout(timeoutId);
 
-                const ctx = canvas.getContext('2d');
-                if (ctx) {
-                    ctx.scale(dpr, dpr);
-                    ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
-                    setContext(ctx);
+            // Debounce by 100ms
+            timeoutId = setTimeout(() => {
+                setInitialized(false);
+                if (canvasRef.current && containerRef.current) {
+                    const canvas = canvasRef.current;
+                    const rect = containerRef.current.getBoundingClientRect();
+                    const dpr = window.devicePixelRatio || 1;
+                    canvas.width = rect.width * dpr;
+                    canvas.height = rect.height * dpr;
 
-                    // Re-draw heart guide and strokes on resize
-                    if (!readOnly && !initialData) {
-                        drawHeartGuide(ctx, rect.width, rect.height);
-                    }
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.scale(dpr, dpr);
+                        ctx.lineCap = 'round';
+                        ctx.lineJoin = 'round';
+                        setContext(ctx);
 
-                    // Replay recorded strokes
-                    strokes.forEach(stroke => {
-                        if (stroke.path.length > 0) {
-                            let p1 = stroke.path[0];
-                            for (let i = 1; i < stroke.path.length; i++) {
-                                const p2 = stroke.path[i];
-                                drawTexturedStroke(ctx, p1, p2, stroke.color);
-                                p1 = p2;
-                            }
+                        // Re-draw heart guide and strokes on resize
+                        if (!readOnly && !initialData) {
+                            drawHeartGuide(ctx, rect.width, rect.height);
                         }
-                    });
+
+                        // Replay recorded strokes
+                        strokes.forEach(stroke => {
+                            if (stroke.path.length > 0) {
+                                let p1 = stroke.path[0];
+                                for (let i = 1; i < stroke.path.length; i++) {
+                                    const p2 = stroke.path[i];
+                                    drawTexturedStroke(ctx, p1, p2, stroke.color);
+                                    p1 = p2;
+                                }
+                            }
+                        });
+                    }
                 }
-            }
+            }, 100);
         };
 
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            clearTimeout(timeoutId);
+        };
     }, [strokes]);
 
     // Initial Replay
@@ -291,6 +305,80 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
         }
     };
 
+    const handleTemplateSelect = (template: Template) => {
+        if (context && containerRef.current) {
+            // 1. Clear canvas and Reset
+            const rect = containerRef.current.getBoundingClientRect();
+            context.clearRect(0, 0, rect.width, rect.height);
+
+            // 2. Calculate Centering Offset
+            // Find bounding box of template strokes
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            let hasPoints = false;
+
+            template.strokes.forEach(s => {
+                s.path.forEach(p => {
+                    minX = Math.min(minX, p.x);
+                    maxX = Math.max(maxX, p.x);
+                    minY = Math.min(minY, p.y);
+                    maxY = Math.max(maxY, p.y);
+                    hasPoints = true;
+                });
+            });
+
+            let finalStrokes = template.strokes;
+
+            if (hasPoints) {
+                const templateCX = (minX + maxX) / 2;
+                const templateCY = (minY + maxY) / 2;
+                const canvasCX = rect.width / 2;
+                const canvasCY = rect.height / 2;
+                const offsetX = canvasCX - templateCX;
+                const offsetY = canvasCY - templateCY;
+
+                // Create new strokes with adjusted coordinates
+                finalStrokes = template.strokes.map(s => ({
+                    ...s,
+                    path: s.path.map(p => ({
+                        x: p.x + offsetX,
+                        y: p.y + offsetY
+                    }))
+                }));
+            }
+
+            setStrokes(finalStrokes);
+            setMoves(0);
+
+            // 3. Animate drawing (Batched for smoothness)
+            let strokeIndex = 0;
+
+            const animateDrawing = () => {
+                if (strokeIndex >= finalStrokes.length) return;
+
+                const batchSize = 2;
+
+                for (let i = 0; i < batchSize && strokeIndex < finalStrokes.length; i++) {
+                    const stroke = finalStrokes[strokeIndex];
+                    if (stroke.path.length > 0) {
+                        let p1 = stroke.path[0];
+                        for (let j = 1; j < stroke.path.length; j++) {
+                            const p2 = stroke.path[j];
+                            drawTexturedStroke(context, p1, p2, stroke.color);
+                            p1 = p2;
+                        }
+                    }
+                    strokeIndex++;
+                }
+
+                requestAnimationFrame(animateDrawing);
+            };
+
+            // Start animation
+            requestAnimationFrame(animateDrawing);
+            setShowTemplates(false);
+        }
+    };
+
     return (
         <LazyMotion features={domAnimation}>
             {/* Backdrop - Only show when NOT readOnly */}
@@ -305,6 +393,61 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                 />
             )}
 
+            {/* Template Selection Modal */}
+            {showTemplates && (
+                <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                        onClick={() => setShowTemplates(false)}
+                    />
+                    <div
+                        className="bg-white/95 rounded-3xl p-6 md:p-8 w-full max-w-sm md:max-w-2xl relative z-10 shadow-2xl border border-white/50 overflow-hidden"
+                    >
+                        {/* Background Decoration */}
+                        <div className="absolute inset-0 -z-10 opacity-10" style={{
+                            backgroundImage: 'radial-gradient(#FF2D55 0.5px, transparent 0.5px)',
+                            backgroundSize: '12px 12px'
+                        }} />
+
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl md:text-2xl font-black text-gray-900 flex items-center gap-3">
+                                <div className="p-2 bg-pink-100 rounded-lg">
+                                    <Wand2 className="w-5 h-5 md:w-6 md:h-6 text-[#FF2D55]" />
+                                </div>
+                                Magic Templates
+                            </h3>
+                            <button
+                                onClick={() => setShowTemplates(false)}
+                                className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors"
+                            >
+                                <span className="text-2xl">✕</span>
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-h-[60vh] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 hide-scrollbar">
+                            {TEMPLATES.map(t => (
+                                <button
+                                    key={t.id}
+                                    onClick={() => handleTemplateSelect(t)}
+                                    className="group relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 border-transparent hover:border-[#FF2D55]/30 hover:bg-white transition-all duration-200 bg-gray-50/50"
+                                >
+                                    <div className="text-4xl md:text-5xl filter drop-shadow-sm">
+                                        {t.icon}
+                                    </div>
+                                    <span className="text-sm font-bold text-gray-700 tracking-tight">{t.name}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 flex justify-center">
+                            <p className="text-xs md:text-sm text-gray-400 font-medium">
+                                Selection will clear your current canvas
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <m.div
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -314,7 +457,7 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                 // Conditional styling: Modal vs Embedded
                 className={readOnly
                     ? "w-full h-full relative overflow-hidden flex flex-col" // Embedded (Preview) - need flex for child to grow
-                    : "absolute left-8 right-8 top-4 bottom-8 z-[70] bg-[#f8f8f8] rounded-lg shadow-2xl overflow-hidden flex flex-col border-2 border-dashed border-[#FF2D55]" // Modal (Drawing)
+                    : "fixed md:absolute left-0 md:left-8 right-0 md:right-8 top-0 md:top-4 bottom-0 md:bottom-8 z-[70] bg-[#f8f8f8] md:rounded-lg shadow-2xl overflow-hidden flex flex-col border-0 md:border-2 border-dashed border-[#FF2D55] h-[100dvh] md:h-auto" // Modal (Drawing)
                 }
                 style={{
                     willChange: 'transform, opacity',
@@ -329,9 +472,17 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                     </div>
                 )}
 
-                {/* X Button inside panel - Circular (hide in readOnly) */}
+                {/* Top Right Controls: Close & Template */}
                 {!readOnly && (
-                    <div className="absolute top-4 right-4 z-10">
+                    <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setShowTemplates(true)}
+                            aria-label="Choose a template"
+                            className="w-10 h-10 bg-white text-[#FF2D55] border-2 border-[#FF2D55]/20 rounded-full flex items-center justify-center text-lg font-bold hover:scale-105 transition-all shadow-sm focus:outline-none"
+                        >
+                            <Wand2 className="w-5 h-5" />
+                        </button>
                         <button
                             type="button"
                             onClick={onClose}
@@ -367,9 +518,9 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                     {/* UI Overlay - Only show when NOT in readOnly mode */}
                     {!readOnly && (
                         <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-end p-4 md:p-6 pb-6">
-                            <div className="flex flex-col md:flex-row items-stretch md:items-end justify-between gap-3 md:gap-4">
+                            <div className="flex flex-col md:flex-row items-stretch md:items-end justify-between gap-3 md:gap-4 h-full md:h-auto pb-safe">
                                 {/* Left Side: Text */}
-                                <div className="flex flex-col gap-0.5 pointer-events-auto">
+                                <div className="flex flex-col gap-0.5 pointer-events-auto mt-auto md:mt-0">
                                     <h2 className="text-lg md:text-xl font-bold text-black mb-1">Draw something just for them,</h2>
                                     <div className="flex flex-col md:flex-row md:items-end gap-1 md:gap-6">
                                         <p className="text-xs md:text-sm text-gray-500 leading-relaxed font-medium">
@@ -380,13 +531,13 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                                 </div>
 
                                 {/* Right Side: Buttons */}
-                                <div className="flex flex-col items-center md:items-end gap-3 pointer-events-auto w-full md:w-auto mt-1 md:mt-0">
-                                    <div className="flex items-center justify-center md:justify-end gap-4 w-full md:w-auto">
+                                <div className="flex flex-col items-center md:items-end gap-3 pointer-events-auto w-full md:w-auto mt-4 md:mt-0">
+                                    <div className="flex flex-col-reverse md:flex-row items-center justify-center md:justify-end gap-3 md:gap-4 w-full md:w-auto">
                                         <button
                                             type="button"
                                             onClick={handleReset}
                                             aria-label="Reset canvas to initial state"
-                                            className="text-xs md:text-sm font-normal text-gray-500 underline underline-offset-4 hover:text-black transition-colors whitespace-nowrap focus:outline-none focus-visible:text-black"
+                                            className="text-sm font-medium text-gray-500 underline underline-offset-4 hover:text-black transition-colors whitespace-nowrap focus:outline-none focus-visible:text-black py-2"
                                         >
                                             Reset Canvas
                                         </button>
@@ -395,10 +546,10 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                                             type="button"
                                             onClick={() => onShare?.(strokes)}
                                             aria-label="Preview your card"
-                                            disabled={moves === 0}
-                                            className="rounded-full px-5 md:px-6 py-1.5 md:py-2 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium text-sm md:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled={moves === 0 && strokes.length === 0}
+                                            className="w-full md:w-auto rounded-full px-8 py-3 md:px-6 md:py-2 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-bold text-lg md:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:shadow-none"
                                         >
-                                            Preview
+                                            Preview Card
                                         </button>
                                     </div>
                                 </div>
