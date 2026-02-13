@@ -10,7 +10,7 @@ export default function Navbar({ onDrawClick, onGalleryClick, isDrawOpen }: Navb
     return (
         <nav className="flex items-center justify-between p-4 px-8 relative z-[60]" role="navigation" aria-label="Main navigation">
             <div className="flex items-center gap-4">
-                <Image src={'/heart-fill.gif'} alt="will you be my valentine" width={45} height={45} />
+                <Image src={'/heart-fill.gif'} alt="Will you be my Valentine" width={45} height={45} />
             </div>
             <div className="flex gap-2">
                 <button

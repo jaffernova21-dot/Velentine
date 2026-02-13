@@ -424,7 +424,7 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-h-[60vh] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 hide-scrollbar">
+                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 max-h-[60vh] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 hide-scrollbar">
                             {TEMPLATES.map(t => (
                                 <button
                                     key={t.id}

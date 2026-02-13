@@ -423,12 +423,20 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
                     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-1000">
                         <div className="max-w-md w-full animate-in zoom-in duration-500">
                             <div className="text-6xl mb-6 drop-shadow-xl">💔</div>
-                            <button
-                                onClick={() => setProposalStatus('idle')}
-                                className="text-gray-700 underline text-lg transition-colors font-medium tracking-wide"
-                            >
-                                Wait... I didn't mean it!
-                            </button>
+                            <div className="flex items-center justify-center gap-4">
+                                <button
+                                    onClick={() => setProposalStatus('idle')}
+                                    className="text-gray-700 underline text-lg transition-colors font-medium tracking-wide hover:text-gray-900"
+                                >
+                                    Wait... I didn't mean it!
+                                </button>
+                                <button
+                                    onClick={() => window.location.href = '/'}
+                                    className="text-blue-500 underline text-lg transition-colors font-medium tracking-wide hover:text-blue-700"
+                                >
+                                    Ask someone else
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ) : (

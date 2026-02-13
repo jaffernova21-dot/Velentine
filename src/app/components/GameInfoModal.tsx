@@ -24,7 +24,7 @@ export default function GameInfoModal({ onClose }: GameInfoModalProps) {
                     ✕
                 </button>
 
-                <h2 className="text-2xl font-bold text-[#FF2D55] mb-6 text-center uppercase tracking-widest">How to Play</h2>
+                <h2 className="text-2xl font-bold text-[#FF2D55] mb-6 text-center uppercase tracking-widest">How It Works</h2>
 
                 <div className="space-y-4 text-gray-700 font-medium">
                     <div className="flex gap-3 items-start">
@@ -37,16 +37,22 @@ export default function GameInfoModal({ onClose }: GameInfoModalProps) {
                     </div>
                     <div className="flex gap-3 items-start">
                         <span className="bg-[#FF2D55] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">3</span>
-                        <p>Share the magic link with your special one.</p>
+                        <p>Share your personalized "will you be my valentine?" link via text or email</p>
                     </div>
                     <div className="flex gap-3 items-start">
                         <span className="bg-[#FF2D55] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">4</span>
-                        <p>They will answer some question, and view surprise drawing card, and respond!</p>
+                        <p>They answer fun questions, see your surprise card, and respond to "will you be my valentine"!</p>
                     </div>
                     <div className="flex gap-3 items-start">
-                        <span className="bg-[#FF2D55] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">4</span>
-                        <p>Cross your fingers and wait 🤞</p>
+                        <span className="bg-[#FF2D55] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">5</span>
+                        <p>Wait for their "will you be my valentine answer" 🤞</p>
                     </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-pink-50 rounded-lg border border-pink-100">
+                    <p className="text-sm text-gray-600 text-center">
+                        💡 <strong>Tip:</strong> Combine your card with thoughtful valentine gifts for her like flowers, chocolates, or a handwritten note for maximum impact!
+                    </p>
                 </div>
 
                 <div className="mt-8 text-center">

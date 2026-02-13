@@ -9,7 +9,7 @@ export default async function Home() {
       <div className="absolute inset-0 -z-20">
         <Image
           src="/clouds1.webp"
-          alt="will you be my valentine"
+          alt="Will you be my Valentine"
           fill
           priority
           className="object-cover object-center"

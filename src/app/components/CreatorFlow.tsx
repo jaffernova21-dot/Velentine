@@ -257,10 +257,16 @@ export default function CreatorFlow() {
                         Will you be my <br /> Valentine ?
                     </h1>
 
-                    <div className="mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                    <div className=" animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
 
                         <p className="text-gray-800 text-sm md:text-base font-medium -mt-1">
-                            ( It takes 2 minutes. They'll remember it forever)
+                            ( It takes 2 minutes. They'll remember it forever )
+                        </p>
+                    </div>
+
+                    <div className="mb-6 animate-in fade-in duration-700 delay-150">
+                        <p className="text-gray-700 text-sm font-semibold">
+                            Already Loved by 15k+ users
                         </p>
                     </div>
 
@@ -285,6 +291,10 @@ export default function CreatorFlow() {
                         >
                             Create Valentine
                         </button>
+                        
+                        <p className="text-center text-xs text-gray-600 mt-3">
+                            💝 Perfect to make them feel special
+                        </p>
                     </div>
 
                     {/* How it works - Bottom Center */}
