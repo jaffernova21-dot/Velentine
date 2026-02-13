@@ -15,18 +15,19 @@ export default function Navbar({ onDrawClick, onGalleryClick, isDrawOpen }: Navb
             <div className="flex gap-2">
                 <button
                     type="button"
-                    onClick={onDrawClick}
+                   onClick={() => window.open("https://buymeacoffee.com/atishaytuli07", "_blank")}
+
                     aria-label={isDrawOpen ? "Close drawing canvas" : "Open drawing canvas"}
                     aria-pressed={isDrawOpen}
-                    className="rounded-full px-6 py-1 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium w-[90px] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
+                    className="rounded-full px-6 py-1 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
                 >
-                    Draw
+                    Love Me
                 </button>
                 <button
                     type="button"
                     onClick={onGalleryClick}
                     aria-label="View community gallery"
-                    className="rounded-full px-6 py-1 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium w-[90px] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
+                    className="rounded-full px-6 py-1 border border-b-[3px] border-black cursor-pointer bg-[#FF2D55] hover:brightness-110 transition-all active:border-b text-white font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black"
                 >
                     Gallery
                 </button>

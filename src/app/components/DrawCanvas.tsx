@@ -401,7 +401,7 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                         onClick={() => setShowTemplates(false)}
                     />
                     <div
-                        className="bg-white/95 rounded-3xl p-6 md:p-8 w-full max-w-sm md:max-w-2xl relative z-10 shadow-2xl border border-white/50 overflow-hidden"
+                        className="bg-white/95 rounded-lg p-4 md:p-6 w-full max-w-sm md:max-w-2xl relative z-10 shadow-2xl border-2 border-dashed border-[#FF2D55] overflow-hidden"
                     >
                         {/* Background Decoration */}
                         <div className="absolute inset-0 -z-10 opacity-10" style={{
@@ -409,11 +409,8 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                             backgroundSize: '12px 12px'
                         }} />
 
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl md:text-2xl font-black text-gray-900 flex items-center gap-3">
-                                <div className="p-2 bg-pink-100 rounded-lg">
-                                    <Wand2 className="w-5 h-5 md:w-6 md:h-6 text-[#FF2D55]" />
-                                </div>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg md:text-xl font-bold text-black">
                                 Magic Templates
                             </h3>
                             <button
@@ -424,14 +421,14 @@ export default function DrawCanvas({ onClose, readOnly = false, initialData, onS
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 max-h-[60vh] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 hide-scrollbar">
+                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 max-h-[60vh] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 hide-scrollbar">
                             {TEMPLATES.map(t => (
                                 <button
                                     key={t.id}
                                     onClick={() => handleTemplateSelect(t)}
                                     className="group relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 border-transparent hover:border-[#FF2D55]/30 hover:bg-white transition-all duration-200 bg-gray-50/50"
                                 >
-                                    <div className="text-4xl md:text-5xl filter drop-shadow-sm">
+                                    <div className="text-3xl md:text-4xl filter drop-shadow-sm">
                                         {t.icon}
                                     </div>
                                     <span className="text-sm font-bold text-gray-700 tracking-tight">{t.name}</span>

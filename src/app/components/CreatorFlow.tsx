@@ -266,7 +266,7 @@ export default function CreatorFlow() {
 
                     <div className="mb-6 animate-in fade-in duration-700 delay-150">
                         <p className="text-gray-700 text-sm font-semibold">
-                            Already Loved by 15k+ users
+                            Already Loved by 21k+ users
                         </p>
                     </div>
 

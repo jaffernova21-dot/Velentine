@@ -145,7 +145,7 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
     const [proposalStatus, setProposalStatus] = useState<'idle' | 'yes' | 'no'>('idle');
     const [showCardModal, setShowCardModal] = useState(false);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-    const router = useRouter();
+    const [timerProgress, setTimerProgress] = useState(0);
 
     // Generate questions from template with receiver name
     const questions = QUESTIONS_TEMPLATE.map(q => ({
@@ -164,10 +164,25 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
     // Auto-advance from Reveal to Proposal after animation
     useEffect(() => {
         if (step === 'REVEAL') {
+            const duration = 5000 + (data.d.length * 500);
+            const startTime = Date.now();
+            
+            const progressInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min((elapsed / duration) * 100, 100);
+                setTimerProgress(progress);
+            }, 50);
+            
             const timer = setTimeout(() => {
                 setStep('PROPOSAL');
-            }, 5000 + (data.d.length * 500)); // Dynamic wait based on drawing complexity
-            return () => clearTimeout(timer);
+                setTimerProgress(0);
+            }, duration);
+            
+            return () => {
+                clearTimeout(timer);
+                clearInterval(progressInterval);
+                setTimerProgress(0);
+            };
         }
     }, [step, data.d.length]);
 
@@ -386,6 +401,38 @@ export default function ReceiverView({ data }: ReceiverViewProps) {
                         <Image src="/heart.webp" alt="will you be my valentine heart" width={32} height={32} className="absolute top-30 right-4 z-20 -rotate-10" />
                         <Image src="/ily.webp" alt="will you be my valentine i love you" width={32} height={32} className="absolute bottom-32 left-6 z-20 rotate-10" />
                         <Image src="/love.svg" alt="will you be my valentine" width={128} height={128} className="absolute -bottom-6 -right-6 opacity-30" />
+
+                        {/* Close Button with Timer Spinner */}
+                        <button
+                            onClick={() => setStep('PROPOSAL')}
+                            className="absolute top-4 right-4 z-40 w-12 h-12 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+                        >
+                            {/* Circular Progress */}
+                            <svg className="absolute w-12 h-12 -rotate-90" viewBox="0 0 48 48">
+                                <circle
+                                    cx="24"
+                                    cy="24"
+                                    r="20"
+                                    fill="none"
+                                    stroke="#FFE0E8"
+                                    strokeWidth="3"
+                                />
+                                <circle
+                                    cx="24"
+                                    cy="24"
+                                    r="20"
+                                    fill="none"
+                                    stroke="#FF2D55"
+                                    strokeWidth="3"
+                                    strokeDasharray={`${2 * Math.PI * 20}`}
+                                    strokeDashoffset={`${2 * Math.PI * 20 * (1 - timerProgress / 100)}`}
+                                    strokeLinecap="round"
+                                    className="transition-all duration-100"
+                                />
+                            </svg>
+                            {/* X Icon */}
+                            <span className="text-black text-xl font-bold relative z-10 pointer-events-none">✕</span>
+                        </button>
 
                         {/* Card Content */}
                         <div className="text-center relative z-10 pt-4">

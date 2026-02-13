@@ -1,4 +1,4 @@
-import { Stroke } from "./encode";
+﻿import { Stroke } from "./encode";
 
 const RED = "rgba(255, 45, 85, 0.25)";
 
@@ -56,57 +56,6 @@ const generateILoveYouText = (): Stroke[] => {
     ];
 };
 
-// NEW: 2. Kiss (Two cute hearts hugging/kissing)
-const generateKissEmoji = (): Stroke[] => {
-    return [
-        // Left heart (bigger, tilted) - IMPROVED
-        createPath([[100, 130], [90, 120], [100, 110], [110, 120], [120, 110], [130, 120], [120, 130], [110, 140], [100, 150], [90, 140], [100, 130]]),
-        
-        // Left heart - bigger eyes
-        createPath([[98, 125], [102, 125]]),
-        createPath([[108, 125], [112, 125]]),
-        
-        // Left heart - rosy cheeks (bigger)
-        createPath([[93, 132], [97, 132]]),
-        createPath([[113, 132], [117, 132]]),
-        
-        // Left heart - bigger smile
-        createPath([[100, 135], [105, 138], [110, 135]]),
-        
-        // Right heart (smaller, tilted other way) - IMPROVED
-        createPath([[170, 140], [160, 130], [170, 120], [180, 130], [190, 120], [200, 130], [190, 140], [180, 150], [170, 160], [160, 150], [170, 140]]),
-        
-        // Right heart - closed happy eyes (curved)
-        createPath([[168, 135], [172, 133], [176, 135]]),
-        createPath([[178, 135], [182, 133], [186, 135]]),
-        
-        // Right heart - rosy cheeks
-        createPath([[163, 142], [167, 142]]),
-        createPath([[188, 142], [192, 142]]),
-        
-        // Right heart - smile
-        createPath([[170, 142], [177, 145], [184, 142]]),
-        
-        // More flowers around (bigger and clearer)
-        createPath([[150, 75], [145, 70], [150, 65], [155, 70], [150, 75]]),
-        createPath([[145, 70], [140, 70]]),
-        createPath([[155, 70], [160, 70]]),
-        createPath([[150, 75], [150, 80]]),
-        
-        createPath([[75, 95], [70, 90], [75, 85], [80, 90], [75, 95]]),
-        createPath([[70, 90], [65, 90]]),
-        createPath([[80, 90], [85, 90]]),
-        
-        createPath([[225, 95], [220, 90], [225, 85], [230, 90], [225, 95]]),
-        createPath([[220, 90], [215, 90]]),
-        createPath([[230, 90], [235, 90]]),
-        
-        // Small hearts floating
-        createPath([[60, 130], [57, 127], [60, 124], [63, 127], [60, 130]]),
-        createPath([[240, 140], [237, 137], [240, 134], [243, 137], [240, 140]])
-    ];
-};
-
 // NEW: 3. Perfect Hug (Two figures hugging)
 const generateHug = (): Stroke[] => {
     return [
@@ -137,155 +86,225 @@ const generateHug = (): Stroke[] => {
 };
 
 // NEW: 4. Cute Couple Together
-const generateCouple = (): Stroke[] => {
+// 👫 COUPLE GAZING - Two people looking lovingly at each other
+const generateCoupleGazing = (): Stroke[] => {
     return [
-        // Girl - head
-        createPath([[100, 110], [110, 105], [120, 110], [120, 120], [110, 125], [100, 120], [100, 110]]),
-        createPath([[95, 112], [90, 120], [88, 135], [90, 150]]),
-        createPath([[100, 108], [95, 115], [93, 130], [95, 145]]),
-        createPath([[120, 108], [125, 115], [127, 130]]),
-        createPath([[100, 108], [105, 103], [110, 101], [115, 103], [120, 108]]),
-        createPath([[105, 115], [107, 115]]),
-        createPath([[113, 115], [115, 115]]),
-        createPath([[107, 120], [110, 121], [113, 120]]),
-        createPath([[110, 125], [110, 145]]),
-        createPath([[110, 145], [95, 170], [125, 170], [110, 145]]),
+        // Left person - facing right
+        // Head
+        createPath([[95, 120], [105, 115], [115, 120], [115, 130], [105, 135], [95, 130], [95, 120]]),
         
-        // Boy - head
-        createPath([[180, 110], [190, 105], [200, 110], [200, 120], [190, 125], [180, 120], [180, 110]]),
-        createPath([[180, 108], [185, 103], [190, 101], [195, 103], [200, 108]]),
-        createPath([[185, 115], [187, 115]]),
-        createPath([[193, 115], [195, 115]]),
-        createPath([[187, 120], [190, 121], [193, 120]]),
-        createPath([[190, 125], [190, 155]]),
-        createPath([[190, 155], [185, 175]]),
-        createPath([[190, 155], [195, 175]]),
+        // Hair (flowing)
+        createPath([[97, 118], [95, 113], [97, 108], [100, 113], [98, 118]]),
         
-        // Holding hands
-        createPath([[125, 145], [180, 145]]),
+        // Eye (looking right at partner)
+        createPath([[107, 125], [109, 125]]),
         
-        // Hearts
-        createPath([[135, 85], [130, 80], [135, 75], [140, 80], [145, 75], [150, 80], [145, 85], [140, 90], [135, 85]]),
-        createPath([[155, 80], [152, 77], [155, 74], [158, 77], [161, 74], [164, 77], [161, 80], [158, 83], [155, 80]]),
-        createPath([[170, 85], [165, 80], [170, 75], [175, 80], [180, 75], [185, 80], [180, 85], [175, 90], [170, 85]])
+        // Smile (soft)
+        createPath([[103, 129], [105, 130], [107, 129]]),
+        
+        // Rosy cheek (blushing)
+        createPath([[98, 127], [100, 127]]),
+        
+        // Body
+        createPath([[105, 135], [105, 165]]),
+        
+        // Sitting position
+        createPath([[105, 165], [90, 180], [120, 180], [105, 165]]),
+        
+        // Arms (one reaching toward partner)
+        createPath([[105, 145], [125, 150]]),
+        createPath([[105, 155], [95, 160]]),
+        
+        // Right person - facing left
+        // Head
+        createPath([[205, 120], [215, 115], [225, 120], [225, 130], [215, 135], [205, 130], [205, 120]]),
+        
+        // Hair (short/neat)
+        createPath([[207, 118], [210, 113], [213, 118]]),
+        createPath([[217, 118], [220, 113], [223, 118]]),
+        
+        // Eye (looking left at partner)
+        createPath([[211, 125], [213, 125]]),
+        
+        // Smile (soft)
+        createPath([[213, 129], [215, 130], [217, 129]]),
+        
+        // Rosy cheek (blushing)
+        createPath([[220, 127], [222, 127]]),
+        
+        // Body
+        createPath([[215, 135], [215, 165]]),
+        
+        // Sitting position
+        createPath([[215, 165], [200, 180], [230, 180], [215, 165]]),
+        
+        // Arms (one reaching toward partner)
+        createPath([[215, 145], [195, 150]]),
+        createPath([[215, 155], [225, 160]]),
+        
+        // Their hands almost touching (anticipation!)
+        createPath([[125, 150], [160, 150]]),
+        createPath([[195, 150], [160, 150]]),
+        
+        // Heart forming between them (at hand connection point)
+        createPath([[160, 145], [155, 140], [160, 135], [165, 140], [170, 135], [175, 140], [170, 145], [165, 150], [160, 145]]),
+        
+        // Hearts floating around
+        createPath([[70, 125], [65, 120], [70, 115], [75, 120], [80, 115], [85, 120], [80, 125], [75, 130], [70, 125]]),
+        createPath([[250, 125], [245, 120], [250, 115], [255, 120], [260, 115], [265, 120], [260, 125], [255, 130], [250, 125]]),
+        
+        // Heart above them
+        createPath([[160, 95], [145, 80], [160, 65], [175, 80], [190, 65], [205, 80], [190, 95], [175, 110], [160, 95]]),
+        
+        // Sparkles (chemistry!)
+        createPath([[135, 140], [138, 143], [141, 140], [138, 137], [135, 140]]),
+        createPath([[185, 140], [188, 143], [191, 140], [188, 137], [185, 140]]),
+        createPath([[160, 125], [163, 128], [166, 125], [163, 122], [160, 125]]),
+        
+        // Small hearts near their feet
+        createPath([[95, 195], [90, 190], [95, 185], [100, 190], [95, 195]]),
+        createPath([[225, 195], [220, 190], [225, 185], [230, 190], [225, 195]])
     ];
 };
 
 // NEW: 5. Cute Panda with I Love You Sign - IMPROVED
-const generatePandaILoveYou = (): Stroke[] => {
+// 🐼 PANDA LOVE - Cute panda with BIG CLEAR "I ❤ U" sign
+const generatePandaLove = (): Stroke[] => {
     return [
-        // Panda head (bigger, rounder)
-        createPath([[150, 115], [170, 110], [185, 120], [192, 135], [192, 150], [185, 165], [170, 175], [150, 180], [130, 175], [115, 165], [108, 150], [108, 135], [115, 120], [130, 110], [150, 115]]),
+        // Panda head (smaller, to make room for bigger sign)
+        createPath([[150, 100], [168, 95], [182, 105], [187, 120], [182, 135], [168, 145], [150, 150], [132, 145], [118, 135], [113, 120], [118, 105], [132, 95], [150, 100]]),
         
-        // Left ear (bigger)
-        createPath([[122, 100], [128, 95], [134, 100], [134, 110], [128, 115], [122, 110], [122, 100]]),
+        // Left ear (round black ear)
+        createPath([[126, 85], [131, 80], [136, 85], [136, 95], [131, 100], [126, 95], [126, 85]]),
         
-        // Right ear (bigger)
-        createPath([[166, 100], [172, 95], [178, 100], [178, 110], [172, 115], [166, 110], [166, 100]]),
+        // Right ear (round black ear)
+        createPath([[164, 85], [169, 80], [174, 85], [174, 95], [169, 100], [164, 95], [164, 85]]),
         
-        // Left eye (bigger, cuter)
-        createPath([[132, 135], [138, 130], [144, 135], [144, 145], [138, 150], [132, 145], [132, 135]]),
-        createPath([[136, 138], [138, 138]]), // pupil
-        createPath([[136, 142], [138, 142]]), // shine
+        // Left eye patch (black circle around eye)
+        createPath([[132, 115], [138, 110], [144, 115], [144, 125], [138, 130], [132, 125], [132, 115]]),
         
-        // Right eye (bigger, cuter)
-        createPath([[156, 135], [162, 130], [168, 135], [168, 145], [162, 150], [156, 145], [156, 135]]),
-        createPath([[160, 138], [162, 138]]), // pupil
-        createPath([[160, 142], [162, 142]]), // shine
+        // Right eye patch (black circle around eye)
+        createPath([[156, 115], [162, 110], [168, 115], [168, 125], [162, 130], [156, 125], [156, 115]]),
         
-        // Nose (bigger)
-        createPath([[146, 152], [150, 150], [154, 152], [154, 156], [150, 158], [146, 156], [146, 152]]),
+        // Left eye (white dot inside patch)
+        createPath([[137, 120], [139, 120]]),
+        createPath([[137, 118], [138, 118]]), // shine
         
-        // Mouth (bigger smile)
-        createPath([[142, 160], [150, 163], [158, 160]]),
+        // Right eye (white dot inside patch)
+        createPath([[161, 120], [163, 120]]),
+        createPath([[161, 118], [162, 118]]), // shine
         
-        // Rosy cheeks
-        createPath([[120, 148], [124, 148]]),
-        createPath([[176, 148], [180, 148]]),
+        // Nose (cute triangle)
+        createPath([[147, 132], [150, 129], [153, 132], [150, 135], [147, 132]]),
         
-        // Panda paws
-        createPath([[108, 165], [115, 175], [120, 185]]),
-        createPath([[192, 165], [185, 175], [180, 185]]),
+        // Adorable smile
+        createPath([[143, 138], [150, 141], [157, 138]]),
         
-        // Sign/card
-        createPath([[120, 185], [180, 185], [180, 235], [120, 235], [120, 185]]),
+        // Rosy blushing cheeks
+        createPath([[120, 125], [125, 125]]),
+        createPath([[175, 125], [180, 125]]),
         
-        // "I" on sign
-        createPath([[135, 200], [135, 220]]),
+        // Panda paws at top of sign
+        createPath([[118, 150], [113, 145], [118, 155]]),
+        createPath([[182, 150], [187, 145], [182, 155]]),
         
-        // Heart on sign (bigger)
-        createPath([[150, 200], [145, 195], [150, 190], [155, 195], [160, 190], [165, 195], [160, 200], [155, 205], [150, 210], [145, 205], [150, 200]]),
+        // === BIG SIGN (MUCH LARGER!) ===
+        createPath([[100, 155], [200, 155], [200, 230], [100, 230], [100, 155]]),
         
-        // "U" on sign
-        createPath([[170, 200], [170, 215], [175, 220], [180, 215], [180, 200]]),
+        // "I" - BIGGER and CLEARER
+        createPath([[120, 175], [120, 210]]),
+        createPath([[115, 175], [125, 175]]),
+        createPath([[115, 210], [125, 210]]),
         
-        // Small hearts floating (3-4 hearts)
-        createPath([[90, 105], [87, 102], [90, 99], [93, 102], [96, 99], [99, 102], [96, 105], [93, 108], [90, 105]]),
-        createPath([[210, 105], [207, 102], [210, 99], [213, 102], [216, 99], [219, 102], [216, 105], [213, 108], [210, 105]]),
-        createPath([[100, 180], [97, 177], [100, 174], [103, 177], [100, 180]]),
-        createPath([[200, 180], [197, 177], [200, 174], [203, 177], [200, 180]])
+        // "❤" HEART - MUCH BIGGER and MORE VISIBLE
+        createPath([[150, 192], [140, 182], [150, 172], [160, 182], [170, 172], [180, 182], [170, 192], [160, 202], [150, 212], [140, 202], [150, 192]]),
+        
+        // Heart center line (makes it clearer)
+        createPath([[150, 172], [150, 212]]),
+        
+        // "U" - BIGGER and CLEARER
+        createPath([[185, 175], [185, 200], [190, 210], [195, 200], [195, 175]]),
+        
+        // Small hearts floating around panda
+        createPath([[80, 95], [75, 90], [80, 85], [85, 90], [90, 85], [95, 90], [90, 95], [85, 100], [80, 95]]),
+        createPath([[220, 95], [215, 90], [220, 85], [225, 90], [230, 85], [235, 90], [230, 95], [225, 100], [220, 95]]),
+        
+        // Hearts at bottom
+        createPath([[85, 240], [80, 235], [85, 230], [90, 235], [95, 230], [100, 235], [95, 240], [90, 245], [85, 240]]),
+        createPath([[215, 240], [210, 235], [215, 230], [220, 235], [225, 230], [230, 235], [225, 240], [220, 245], [215, 240]]),
+        
+        // Sparkles (panda's love is magical)
+        createPath([[95, 120], [98, 123], [101, 120], [98, 117], [95, 120]]),
+        createPath([[199, 120], [202, 123], [205, 120], [202, 117], [199, 120]]),
+        
+        // Extra sparkles around the heart on sign
+        createPath([[130, 180], [133, 183], [136, 180], [133, 177], [130, 180]]),
+        createPath([[170, 200], [173, 203], [176, 200], [173, 197], [170, 200]])
     ];
 };
 
 // NEW: 6. Cute Teddy Bear with Heart - IMPROVED with "I LOVE YOU" on top
 const generateTeddyBear = (): Stroke[] => {
     return [
-        // "I LOVE YOU" text on top
-        createPath([[120, 50], [120, 65]]), // I
-        createPath([[135, 50], [145, 50], [145, 65], [135, 65]]), // L
-        createPath([[155, 50], [165, 50], [165, 65], [155, 65], [155, 50]]), // O
-        createPath([[175, 50], [180, 65], [185, 50]]), // V
-        createPath([[195, 50], [205, 50]]), // E top
-        createPath([[195, 50], [195, 65]]), // E vertical
-        createPath([[195, 57], [203, 57]]), // E middle
-        createPath([[195, 65], [205, 65]]), // E bottom
+        // Head (big, round, and cute)
+        createPath([[150, 105], [170, 100], [185, 110], [190, 125], [185, 140], [170, 150], [150, 155], [130, 150], [115, 140], [110, 125], [115, 110], [130, 100], [150, 105]]),
         
-        // Head (bigger, rounder)
-        createPath([[150, 95], [172, 90], [188, 100], [195, 115], [195, 130], [188, 145], [172, 155], [150, 160], [128, 155], [112, 145], [105, 130], [105, 115], [112, 100], [128, 90], [150, 95]]),
+        // Left ear (round)
+        createPath([[122, 90], [127, 85], [132, 90], [132, 100], [127, 105], [122, 100], [122, 90]]),
         
-        // Left ear (bigger)
-        createPath([[118, 80], [124, 75], [130, 80], [130, 92], [124, 97], [118, 92], [118, 80]]),
+        // Right ear (round)
+        createPath([[168, 90], [173, 85], [178, 90], [178, 100], [173, 105], [168, 100], [168, 90]]),
         
-        // Right ear (bigger)
-        createPath([[170, 80], [176, 75], [182, 80], [182, 92], [176, 97], [170, 92], [170, 80]]),
+        // Left eye (button eye)
+        createPath([[135, 120], [138, 120]]),
+        createPath([[136, 118], [137, 118]]), // shine
         
-        // Left eye (bigger)
-        createPath([[133, 115], [137, 115]]),
-        createPath([[133, 112], [137, 112]]), // eyebrow
+        // Right eye (button eye)
+        createPath([[162, 120], [165, 120]]),
+        createPath([[163, 118], [164, 118]]), // shine
         
-        // Right eye (bigger)
-        createPath([[163, 115], [167, 115]]),
-        createPath([[163, 112], [167, 112]]), // eyebrow
+        // Cute little nose (triangle)
+        createPath([[148, 130], [150, 128], [152, 130], [150, 132], [148, 130]]),
         
-        // Snout/muzzle (bigger oval)
-        createPath([[138, 125], [150, 122], [162, 125], [162, 138], [150, 141], [138, 138], [138, 125]]),
+        // Happy smile
+        createPath([[150, 132], [145, 136], [150, 138], [155, 136], [150, 132]]),
         
-        // Nose (bigger)
-        createPath([[146, 127], [150, 125], [154, 127], [154, 131], [150, 133], [146, 131], [146, 127]]),
+        // Snout/muzzle area (lighter color patch)
+        createPath([[140, 128], [150, 126], [160, 128], [160, 138], [150, 140], [140, 138], [140, 128]]),
         
-        // Mouth (bigger smile)
-        createPath([[150, 133], [143, 137], [150, 140], [157, 137], [150, 133]]),
+        // Body (round and huggable)
+        createPath([[130, 155], [120, 165], [115, 185], [120, 205], [140, 215], [160, 215], [180, 205], [185, 185], [180, 165], [170, 155]]),
         
-        // Body (bigger, rounder)
-        createPath([[128, 160], [115, 172], [108, 192], [115, 212], [140, 225], [160, 225], [185, 212], [192, 192], [185, 172], [172, 160]]),
+        // Left arm (reaching out to hold heart)
+        createPath([[130, 160], [110, 175], [105, 190]]),
+        createPath([[105, 188], [107, 190], [109, 188]]), // paw pad
         
-        // Left arm
-        createPath([[128, 165], [105, 178], [98, 195], [105, 210]]),
-        
-        // Right arm
-        createPath([[172, 165], [195, 178], [202, 195], [195, 210]]),
+        // Right arm (reaching out to hold heart)
+        createPath([[170, 160], [190, 175], [195, 190]]),
+        createPath([[193, 188], [195, 190], [197, 188]]), // paw pad
         
         // Left leg/foot
-        createPath([[130, 212], [123, 225], [123, 238], [135, 243], [147, 238], [147, 225]]),
+        createPath([[135, 205], [130, 218], [130, 228], [138, 232], [146, 228]]),
+        createPath([[134, 225], [136, 227], [138, 225]]), // paw pad
         
         // Right leg/foot
-        createPath([[170, 212], [177, 225], [177, 238], [165, 243], [153, 238], [153, 225]]),
+        createPath([[165, 205], [170, 218], [170, 228], [162, 232], [154, 228]]),
+        createPath([[162, 225], [164, 227], [166, 225]]), // paw pad
         
-        // Big heart in center (bigger)
-        createPath([[150, 175], [132, 163], [150, 151], [168, 163], [186, 151], [204, 163], [186, 175], [168, 187], [150, 199], [132, 187], [150, 175]]),
+        // BIG HEART in center (the teddy is offering his heart)
+        createPath([[150, 170], [135, 155], [150, 140], [165, 155], [180, 140], [195, 155], [180, 170], [165, 185], [150, 200], [135, 185], [150, 170]]),
         
-        // Heart detail
-        createPath([[150, 151], [150, 199]])
+        // Heart details (to make it pop)
+        createPath([[145, 165], [155, 165]]),
+        createPath([[150, 160], [150, 175]]),
+        
+        // Small hearts around teddy (love radiating)
+        createPath([[95, 125], [90, 120], [95, 115], [100, 120], [95, 125]]),
+        createPath([[205, 125], [200, 120], [205, 115], [210, 120], [205, 125]]),
+        
+        // Sparkles
+        createPath([[85, 180], [88, 183], [91, 180], [88, 177], [85, 180]]),
+        createPath([[209, 180], [212, 183], [215, 180], [212, 177], [209, 180]])
     ];
 };
 
@@ -335,10 +354,36 @@ const generateLoveText = (): Stroke[] => {
 };
 
 // 11. Envelope
-const generateEnvelope = (): Stroke[] => {
+const generateLoveLetter = (): Stroke[] => {
     return [
-        createPath([[80, 100], [220, 100], [220, 200], [80, 200], [80, 100]]),
-        createPath([[80, 100], [150, 160], [220, 100]])
+        // Envelope rectangle (main body)
+        createPath([[80, 110], [220, 110], [220, 200], [80, 200], [80, 110]]),
+        
+        // Envelope flap (triangle at top)
+        createPath([[80, 110], [150, 165], [220, 110]]),
+        
+        // Heart wax seal on flap (big and romantic)
+        createPath([[150, 135], [140, 125], [150, 115], [160, 125], [170, 115], [180, 125], [170, 135], [160, 145], [150, 135]]),
+        
+        // Seal details (to make it look like wax)
+        createPath([[145, 130], [155, 130]]),
+        createPath([[150, 125], [150, 135]]),
+        
+        // Decorative hearts floating around
+        createPath([[55, 100], [50, 95], [55, 90], [60, 95], [65, 90], [70, 95], [65, 100], [60, 105], [55, 100]]),
+        createPath([[245, 100], [240, 95], [245, 90], [250, 95], [255, 90], [260, 95], [255, 100], [250, 105], [245, 100]]),
+        
+        // Small hearts at bottom corners
+        createPath([[60, 210], [55, 205], [60, 200], [65, 205], [60, 210]]),
+        createPath([[240, 210], [235, 205], [240, 200], [245, 205], [240, 210]]),
+        
+        // Sparkles around the seal
+        createPath([[130, 120], [133, 123], [136, 120], [133, 117], [130, 120]]),
+        createPath([[184, 120], [187, 123], [190, 120], [187, 117], [184, 120]]),
+        
+        // Letter edge peaking out (to show there's something inside)
+        createPath([[100, 185], [200, 185]]),
+        createPath([[110, 175], [190, 175]])
     ];
 };
 
@@ -400,11 +445,11 @@ const generateRing = (): Stroke[] => {
 export const TEMPLATES: Template[] = [
     { id: 'iloveyou', name: 'I Love You', icon: '💕', strokes: generateILoveYouText() },
     { id: 'hug', name: 'Hug', icon: '🤗', strokes: generateHug() },
-    { id: 'couple', name: 'Couple', icon: '👫', strokes: generateCouple() },
-    { id: 'panda', name: 'Panda Love', icon: '🐼', strokes: generatePandaILoveYou() },
+    { id: 'couple', name: 'Couple', icon: '👫', strokes: generateCoupleGazing() },
+    { id: 'panda', name: 'Panda Love', icon: '🐼', strokes: generatePandaLove() },
     { id: 'teddy', name: 'Teddy Bear', icon: '🧸', strokes: generateTeddyBear() },
     { id: 'heart', name: 'Perfect Heart', icon: '❤️', strokes: generateHeart() },
-    { id: 'rose', name: 'Rose', icon: '�', strokes: generateRose() },
+    { id: 'rose', name: 'Rose', icon: '🌹', strokes: generateRose() },
     { id: 'tulip', name: 'Tulip', icon: '🌷', strokes: generateTulip() },
     { id: 'lips', name: 'Lips', icon: '💋', strokes: generateLips() },
     { id: 'love', name: 'Love', icon: '✍️', strokes: generateLoveText() },
@@ -412,5 +457,5 @@ export const TEMPLATES: Template[] = [
     { id: 'infinity', name: 'Forever', icon: '♾️', strokes: generateInfinityHeart() },
     { id: 'arrow', name: 'Cupid', icon: '🏹', strokes: generateCupidArrow() },
     { id: 'ring', name: 'Marry Me', icon: '💍', strokes: generateRing() },
-    { id: 'envelope', name: 'Envelope', icon: '💌', strokes: generateEnvelope() }
+    { id: 'envelope', name: 'Envelope', icon: '💌', strokes: generateLoveLetter() }
 ];
