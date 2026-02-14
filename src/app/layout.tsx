@@ -6,17 +6,23 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 const chewy = Chewy({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-chewy",
+  display: "swap",
+  preload: true,
 });
 
 export const viewport: Viewport = {
@@ -33,7 +39,10 @@ export const metadata: Metadata = {
     google: "eP_k7lAoHo1853EwR8zCZmZedWBoRXSHVlCBn4R92PA",
   },
   metadataBase: new URL("https://willyoubmyvalentine.vercel.app"),
-  title: "Will You Be My Valentine?",
+  title: {
+    default: "Will You Be My Valentine?",
+    template: "%s | Will You Be My Valentine"
+  },
   description: "Create a free Valentine card with drawings. Ask 'Will you be my Valentine?' in a fun way. Find gift ideas and how to answer. No signup!",
   applicationName: "Will You Be My Valentine",
   authors: [{ name: "iloveyou" }],

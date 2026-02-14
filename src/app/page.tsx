@@ -20,23 +20,6 @@ export default async function Home() {
         <HomeClient />
       </Suspense>
 
-      {/* Buy Me a Coffee Floating Button */}
-      <a
-        href="https://buymeacoffee.com/atishaytuli07"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 transition-transform hover:scale-110 active:scale-95"
-        aria-label="Buy me a coffee"
-      >
-        <Image
-          src="/cup.png"
-          alt="Buy Me A Coffee"
-          width={60}
-          height={60}
-          className="shadow-lg rounded-full"
-        />
-      </a>
-
     </main>
   );
 }
